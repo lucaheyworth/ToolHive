@@ -120,7 +120,7 @@ class TxtUtils(ctk.CTkFrame):
         self.outputLabel = ctk.CTkLabel(self.txtConversionUtilsContainer, text="")
         self.outputLabel.grid(row=5, column=0, columnspan=3, padx=10, pady=10, sticky="ew")
         
-        self.copyButton = ctk.CTkButton(self.txtConversionUtilsContainer, text="Copy", width=50, height=35)
+        self.copyButton = ctk.CTkButton(self.txtConversionUtilsContainer, text="Copy", width=50, height=35, command=self.copyToClipboard)
         self.copyButton.grid(row=5, column=3, padx=10, pady=10, sticky="ew")
 
     def convertToUppercase(self):
