@@ -1,10 +1,11 @@
 import customtkinter as ctk
+from tkinter import filedialog
 import random
 import clipboard
 
 ctk.set_default_color_theme(f"themes/{random.choice(['autumn', 'breeze', 'carrot', 'cherry', 'coffee', 'lavender', 'marsh', 'metal', 'midnight', 'orange', 'patina', 'pink', 'red', 'rime', 'rose', 'sky', 'violet', 'yellow'])}.json")
 
-# TODO: When you press 'cntrl + alt + t' it should open the toolHive application. This should be an option set in the installer.
+# TODO: When you press 'cntrl + alt + t' it should open the Utools application. This should be an option set in the installer.
 
 class seperatorLine(ctk.CTkFrame):
     def __init__(self, master=None):
@@ -23,10 +24,6 @@ class TxtUtils(ctk.CTkFrame):
     def __init__(self, master=None):
         super().__init__(master)
         self.master = master
-        
-        # Configure rows and columns for responsiveness
-        self.rowconfigure(0, weight=1)
-        self.columnconfigure((0, 1, 2, 3), weight=1)
         
         self.txtUtilsContainer = ctk.CTkFrame(self)
         self.txtUtilsContainer.columnconfigure((0, 1, 2, 3), weight=1)
@@ -56,6 +53,19 @@ class TxtUtils(ctk.CTkFrame):
         # Re-grid the widgets in the main container
         self.textConversionLink.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
         self.textAnalysisLink.grid(row=0, column=1, padx=10, pady=10, sticky="ew")
+        
+    def selectFile(self):
+        """
+        Function to select a text file using a file dialog.
+        """
+        txt = filedialog.askopenfile(mode='r', filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
+        # If inputText exists, set its text to the content of the selected file
+        if txt:
+            content = txt.read()
+            if hasattr(self, 'inputText'):
+                self.inputText.delete(0, ctk.END)
+                self.inputText.insert(0, content)  # Insert the content into the inputText widget
+
     
     def textCaseConversion(self):
         """
@@ -73,23 +83,22 @@ class TxtUtils(ctk.CTkFrame):
         # Create a new container for text conversion utilities
         self.txtConversionUtilsContainer = ctk.CTkFrame(self)
         self.txtConversionUtilsContainer.grid(row=0, column=0, columnspan=4, padx=10, pady=10, sticky="nsew")
-        self.txtConversionUtilsContainer.columnconfigure((0, 1, 2, 3), weight=1)
-        self.txtConversionUtilsContainer.rowconfigure((0, 1, 2, 3, 4, 5), weight=1)
+        self.txtConversionUtilsContainer.grid_rowconfigure(0, weight=1)
 
         # Add the back button to the new container
         self.backButton = ctk.CTkButton(self.txtConversionUtilsContainer, text="Back", width=50, height=25, command=self.backToTxtUtils)
         self.backButton.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
 
         # Add other widgets to the new container
-        self.selectTxtFile = ctk.CTkButton(self.txtConversionUtilsContainer, text="Select Text File", width=100, height=50)
+        self.selectTxtFile = ctk.CTkButton(self.txtConversionUtilsContainer, text="Select Text File", width=100, height=50, command=self.selectFile)
         self.selectTxtFile.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
 
-        self.orLabel = ctk.CTkLabel(self.txtConversionUtilsContainer, text="or")
+        self.orLabel = ctk.CTkLabel(self.txtConversionUtilsContainer, text="or", font=("Roboto", 24))
         self.orLabel.grid(row=1, column=1, padx=10, pady=10, sticky="ew")
 
         self.inputText = ctk.CTkEntry(self.txtConversionUtilsContainer, width=200)
         self.inputText.grid(row=1, column=2, padx=10, pady=10, sticky="ew")
-
+        
         self.upperCaseButton = ctk.CTkButton(self.txtConversionUtilsContainer, text="UPPERCASE", width=100, height=50, command=self.convertToUppercase)
         self.upperCaseButton.grid(row=2, column=0, padx=10, pady=10, sticky="ew")
 
@@ -171,17 +180,13 @@ class TxtUtils(ctk.CTkFrame):
         output_text = self.outputLabel.cget("text")
         clipboard.copy(output_text)
         
-class ToolHive(ctk.CTk):
+class Utools(ctk.CTk):
     def __init__(self): 
         super().__init__()
-        self.title("ToolHive")
+        self.title("Utools")
         self.geometry("800x600")
+        self.columnconfigure((0, 1, 2, 3), weight=1)
         
-        # Configure rows and columns for responsiveness
-        self.columnconfigure((0, 1, 2, 3), weight=1)  # Equal weight for all columns
-        self.rowconfigure(1, weight=1)  # Make the main content area responsive
-        
-        # Add buttons for utilities
         self.imgUtils = ctk.CTkButton(self, text="Image Utilities", width=100, height=50)
         self.imgUtils.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
         
@@ -202,5 +207,5 @@ class ToolHive(ctk.CTk):
         txt_utils.grid(row=1, column=0, columnspan=4, padx=10, pady=10, sticky="nsew")
         
 if __name__ == "__main__":
-    app = ToolHive()
+    app = Utools()
     app.mainloop()
